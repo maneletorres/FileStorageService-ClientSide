@@ -60,7 +60,7 @@ public class FileClient {
 
             socket.close();
         } catch (IOException ex) {
-            System.out.println("S'ha produït una excepció durant la connexió. Excepció: " + ex);
+            System.out.println("There was an exception during the connection. Exception: " + ex);
         }
 
         return serverMessage;
@@ -77,21 +77,21 @@ public class FileClient {
             OutputStreamWriter osw = new OutputStreamWriter(os);
             PrintWriter pWriter = new PrintWriter(osw);
 
-            System.out.print("Introdueix el nom del fitxer a pujar: ");
+            System.out.print("Enter the name of the file to upload: ");
             BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
             String fileName = stdin.readLine();
 
             File file = new File(fileName);
             if (!file.exists()) {
-                System.out.println("El fitxer " + fileName + " no s'ha pogut pujar al servidor perqué no existeix.");
+                System.out.println("The file " + fileName + " could not be uploaded to the server because it does not exist.");
                 return;
             }
 
             pWriter.println("put " + fileName);
             pWriter.flush();
 
-            // Alternativa 1 - Comentar / descomentar la part corresponent al servidor:
-            System.out.println("Pujant el fitxer " + fileName + "...");
+            // Alternative 1 - Comment / uncomment the part corresponding to the server:
+            System.out.println("Uploading file " + fileName + "...");
             FileInputStream fis = new FileInputStream(fileName);
             int bytes, bytesCopied = 0;
             do {
@@ -102,7 +102,7 @@ public class FileClient {
                 }
 
             } while (bytes != -1);
-            System.out.println("El fitxer " + fileName + " s'ha pujat al servidor correctament. Bytes copiats: " + bytesCopied + ".");
+            System.out.println("The file " + fileName + " has uploaded to the server correctly. Copied bytes: " + bytesCopied + ".");
 
             os.close();
             fis.close();
@@ -111,7 +111,8 @@ public class FileClient {
             os.close();
 
             socket.close();
-            // Alternativa 2 - Comentar / descomentar la part corresponent al servidor:
+
+            // Alternative 2 - Comment / uncomment the part corresponding to the server:
             /*File myFile = new File(fileName);
             byte[] mybytearray = new byte[(int) myFile.length()];
 
@@ -119,17 +120,17 @@ public class FileClient {
             BufferedInputStream bis = new BufferedInputStream(fis);
             DataInputStream dis = new DataInputStream(bis);
 
-            System.out.println("Pujant el fitxer " + fileName + "...");
+            System.out.println("Uploading file " + fileName + "...");
             dis.readFully(mybytearray, 0, mybytearray.length);
 
-            // Enviament del nom i grandària del fitxer al servidor:
+            // Sending the name and size of the file to the server:
             DataOutputStream dos = new DataOutputStream(os);
             dos.writeUTF(myFile.getName());
             dos.writeLong(mybytearray.length);
 
             dos.write(mybytearray, 0, mybytearray.length);
             dos.flush();
-            System.out.println("El fitxer " + fileName + " s'ha pujat al servidor correctament. Bytes copiats: " + mybytearray.length + ".");
+            System.out.println("The file " + fileName + "  was successfully uploaded to the server. Copied bytes: " + mybytearray.length + ".");
 
             dos.close();
             dis.close();
@@ -141,7 +142,7 @@ public class FileClient {
 
             socket.close();*/
         } catch (IOException ex) {
-            System.out.println("El fitxer no s'ha pogut pujar al servidor perqué s'ha donat la següent excepció: " + ex.getMessage());
+            System.out.println("The file could not be uploaded to the server because the following exception was given: " + ex.getMessage());
         }
     }
 
@@ -149,7 +150,7 @@ public class FileClient {
         String resposta = sendCommand("check " + fileName);
 
         if (resposta.replaceAll("\n", "").equals("false")) {
-            System.out.println("El fitxer " + fileName + " no s'ha pogut descarregar del servidor perqué no existeix.");
+            System.out.println("The file " + fileName + " could not be downloaded from the server because it does not exist.");
             return;
         }
 
@@ -168,7 +169,7 @@ public class FileClient {
             InputStream is = socket.getInputStream();
             FileOutputStream fos = new FileOutputStream(fileName);
 
-            System.out.println("Descarregant el fitxer " + fileName + "...");
+            System.out.println("Downloading the file " + fileName + "...");
             int bytes, bytesCopied = 0;
             do {
                 bytes = is.read();
@@ -177,7 +178,7 @@ public class FileClient {
                     bytesCopied++;
                 }
             } while (bytes != -1);
-            System.out.println("El fitxer " + fileName + " s'ha descarregat del servidor correctament. Bytes copiats: " + bytesCopied + ".");
+            System.out.println("The file " + fileName + " was downloaded successfully from the server. Copied bytes: " + bytesCopied + ".");
 
             os.close();
             is.close();
@@ -188,7 +189,7 @@ public class FileClient {
 
             socket.close();
         } catch (IOException ex) {
-            System.out.println("El fitxer no s'ha pogut descarregar del servidor perqué s'ha donat la següent excepció: " + ex.getMessage());
+            System.out.println("The file could not be downloaded from the server because the following exception was given: " + ex.getMessage());
         }
     }
 
@@ -196,9 +197,9 @@ public class FileClient {
         if (establishConnection()) {
             Scanner scanner = new Scanner(System.in);
             do {
-                System.out.println("\n------ APLICACIÓ CLIENT / SERVIDOR ------");
+                System.out.println("\n------ SERVER CLIENT APPLICATION ------");
                 System.out.println("- list");
-                System.out.println("- get [fitxer]");
+                System.out.println("- get [file]");
                 System.out.println("- put");
                 System.out.println("- quit / exit");
                 System.out.print("# FileClient(" + ipServer + ":" + dstPort + ")> ");
@@ -213,7 +214,7 @@ public class FileClient {
                         break;
                     case "quit":
                     case "exit":
-                        System.out.println("Tancant l'aplicació...");
+                        System.out.println("Closing the application...");
                         System.exit(0);
                         break;
                     default:
@@ -227,30 +228,29 @@ public class FileClient {
                                     getFile(commandSplitted[1]);
                                     break;
                                 default:
-                                    System.out.println("Has introduït una opció incorrecta.");
+                                    System.out.println("You have entered an incorrect option.");
                             }
                         } else {
-                            System.out.println("Has introduït un nombre d'arguments incorrecte. El nombre d'arguments ha de ser 2.");
+                            System.out.println("You have entered a number of incorrect arguments. The number of arguments must be 2.");
                         }
                 }
             } while (true);
         } else {
-            System.out.println("No s'ha pogut establir la connexió amb el servidor.");
+            System.out.println("The connection to the server could not be established.");
         }
 
     }
 
-    /* Mètode que s'utilitza per comprovar que es podrà mantenir una connexió
-    exitosa amb el servidor ubicat a la direcció IP passada com a argument
-    amb la finalitat de no mostrar la CLI si dita connexió no es pot efectuar
-    correctament: */
+    /* Method used to verify that a connection can be maintained successful with
+    the server located in the IP address passed as an argument in order not to
+    display the CLI if this connection can not be performed correctly: */
     public boolean establishConnection() {
         return sendCommand("GET connection status").replaceAll("\n", "").equals("true");
     }
 
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("Has introduït un nombre d'arguments incorrecte. El nombre d'arguments ha de ser 1.");
+            System.out.println("You have entered a number of incorrect arguments. The number of arguments must be 1.");
             System.exit(-1);
         }
 
